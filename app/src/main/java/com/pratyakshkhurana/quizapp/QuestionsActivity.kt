@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.media.MediaPlayer
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -13,6 +14,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_questions2.*
+import androidx.core.graphics.toColorInt
 
 
 class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
@@ -42,7 +44,7 @@ class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_questions2)
-
+        hideBottomUIMenu()
         mQuestion = tvQuestion
         mProgressbar = progressBar
         mRating = rating
@@ -103,7 +105,7 @@ class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
         mOption4.background = ContextCompat.getDrawable(this, R.drawable.bg4)
 
         for (option in allOptions) {
-            option.setTextColor(Color.parseColor("#FFFFFF"))
+            option.setTextColor("#FFFFFF".toColorInt())
             option.typeface = Typeface.DEFAULT
         }
     }
@@ -112,7 +114,7 @@ class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
         resetToDefaultOptions()
         mSelectOptionPosition = selectedOptionPosition
 
-        tv.setTextColor(Color.parseColor("#363A43"))
+        tv.setTextColor("#363A43".toColorInt())
         tv.setTypeface(tv.typeface, Typeface.BOLD)
         tv.background = ContextCompat.getDrawable(
             this,
@@ -232,6 +234,22 @@ class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
         animation.duration = 500
         animation.interpolator = DecelerateInterpolator()
         animation.start()
+    }
+    /**
+     * 隐藏虚拟按键，并且全屏
+     */
+    protected fun hideBottomUIMenu() {
+        //隐藏虚拟按键，并且全屏
+        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
+            val v = this.window.decorView
+            v.systemUiVisibility = View.GONE
+        } else if (Build.VERSION.SDK_INT >= 19) {
+            //for new api versions.
+            val decorView = window.decorView
+            val uiOptions = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_FULLSCREEN)
+            decorView.systemUiVisibility = uiOptions
+        }
     }
 }
 

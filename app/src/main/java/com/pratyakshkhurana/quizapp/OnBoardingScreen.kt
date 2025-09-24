@@ -1,13 +1,14 @@
 package com.pratyakshkhurana.quizapp
 
-import android.content.Context
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import androidx.core.content.edit
 
 class OnBoardingScreen : AppCompatActivity() {
     var OnBoardingAdapter:AdapterViewPager?=null
@@ -25,7 +26,7 @@ class OnBoardingScreen : AppCompatActivity() {
         next=findViewById(R.id.nextMove)
 
         //Adding Data
-        var OnBoardIngData= arrayListOf<OnBoardIngItems>()
+        val OnBoardIngData= arrayListOf<OnBoardIngItems>()
         OnBoardIngData.add(OnBoardIngItems(R.drawable.topic_display,"Different Subjects for the Quiz"))
         OnBoardIngData.add(OnBoardIngItems(R.drawable.questions_display,"Simple User Interface for the Quiz"))
         setOnBoardingViewPagerAdapter(OnBoardIngData)
@@ -45,12 +46,13 @@ class OnBoardingScreen : AppCompatActivity() {
         }
 
         tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            @SuppressLint("SetTextI18n")
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 position=tab!!.position
                 if(tab.position==OnBoardIngData.size-1)
-                    next?.text="Get Started";
+                    next?.text="Get Started"
                 else
-                    next?.text="Next";
+                    next?.text="Next"
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -74,13 +76,13 @@ class OnBoardingScreen : AppCompatActivity() {
     }
     private fun savePrefData()
     {
-        sharedPreferences=applicationContext.getSharedPreferences("pref",Context.MODE_PRIVATE)
-        val editor = sharedPreferences!!.edit()
-        editor.putBoolean("isFirstTimeRun",true);
-        editor.apply()
+        sharedPreferences=applicationContext.getSharedPreferences("pref", MODE_PRIVATE)
+        sharedPreferences!!.edit {
+            putBoolean("isFirstTimeRun", true)
+        }
     }
     private fun restorePrefData(): Boolean {
-        sharedPreferences=applicationContext.getSharedPreferences("pref",Context.MODE_PRIVATE)
+        sharedPreferences=applicationContext.getSharedPreferences("pref", MODE_PRIVATE)
         return sharedPreferences!!.getBoolean("isFirstTimeRun",false)
     }
 
